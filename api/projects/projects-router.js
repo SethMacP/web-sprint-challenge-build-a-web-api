@@ -9,7 +9,7 @@
 
 const express = require('express');
 const model = require('./projects-model');
-const {validateProjectID} = require('../middleware/projectsMiddleware');
+const {validateProjectID, validateResource} = require('../middleware/projectsMiddleware');
 const router = express.Router();
 
 router.get("/api/projects", (req,res)=>{
@@ -31,18 +31,45 @@ router.get("/api/projects/:id", validateProjectID(), (req,res)=>{
         })
     
 })
-router.post("/api/projects", (req,res)=>{
-    
+router.post("/api/projects", validateResource(), (req,res)=>{
+    model.insert(req.body)
+        .then(project=>{
+            res.status(200).json(project)
+        })
+        .catch(()=>{
+            res.status(500).json({message: "Server Error"})
+        })
 })
-router.put("/api/projects/:id", validateProjectID(), (req,res)=>{
-    
+router.put("/api/projects/:id", validateResource(), validateProjectID(),  (req,res)=>{
+    // console.log(req.params.id)
+    // console.log("reqbody", req.body)
+    model.update(req.params.id, req.body)
+        .then( project => {
+            res.status(200).json(project)
+        })
+        .catch(()=>{
+            res.status(500).json({message:"Server Error"})
+        })
 })
 router.delete("/api/projects/:id", validateProjectID(), (req,res)=>{
-    
+    model.remove(req.params.id)
+        .then(()=>{
+            res.status(200).json({message:`Deleted : ${req.params.id}`})
+        })
+        .catch(()=>{
+            
+            res.status(500).json({message:"Server Error"})
+        }) 
 })
 
 router.get("/api/projects/:id/actions", validateProjectID(), (req,res)=>{
-    
+    model.getProjectActions(req.params.id)
+        .then( projectActions =>{
+            res.status(200).json(projectActions)
+        })
+        .catch(()=>{
+            res.status(500).json({message: "Server Error"})
+        })
 })
 
 module.exports = router;

@@ -33,7 +33,7 @@ router.post("/api/actions",validateResource(), (req,res, next)=>{
             res.status(500).json({message:"Server Error"})
         })
 })
-router.put("/api/actions/:id", validateActionID(), validateResource(), (req,res)=>{
+router.put("/api/actions/:id", validateResource(), validateActionID(),  (req,res)=>{
     model.update( req.params.id , req.body )
         .then((action)=>{
             res.status(200).json(action)

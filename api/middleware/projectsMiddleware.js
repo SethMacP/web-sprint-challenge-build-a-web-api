@@ -3,18 +3,17 @@ const model = require('../projects/projects-model')
 function validateProjectID (){
     return (req,res,next) => {
             model.get(req.params.id)
-            .then(res=>{
-                if(res){
-                    req.action = res;
+            .then(project=>{
+                if(project){
                     next();
                 }else{
                     res.status(404).json({message:'Nothing found with that ID'})
                 }
             })
             .catch(err=>{
+                console.log("uh oh")
                 res.status(500).json({message: "Server Error"})
             })
-
     }
 }
 
