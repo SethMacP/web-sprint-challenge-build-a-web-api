@@ -13,7 +13,7 @@ function validateActionID (){
                 }
             })
             .catch(err=>{
-                res.status(500).json({message: "Server Error"})
+                res.status(404).json({message: "Server Error"})
             })
 
     }
